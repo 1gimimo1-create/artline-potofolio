@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ARTLINE</title>
+  <link rel="icon" type="image/png" href="images/ic.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0f1115;
+      --bg-card: #181b22;
+      --accent: #0b9ff5;
+      --accent-hover: #0673d9;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --border-color: #262a34;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+    body { background: var(--bg-dark); color: var(--text-main); line-height: 1.6; }
+
+    header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.2rem 8%; background: rgba(15,17,21,.95);
+      border-bottom: 1px solid var(--border-color);
+      position: sticky; top: 0; z-index: 100; backdrop-filter: blur(8px);
+    }
+    .logo img { height: 40px; display: block; }
+    nav a { color: var(--text-muted); text-decoration: none; margin-inline-start: 1.5rem; font-weight: 500; transition: color .2s; }
+    nav a:hover { color: var(--accent); }
+
+    .hero { padding: 5rem 8% 4rem; text-align: center; background: radial-gradient(circle at 50% 20%, #1e2430 0%, var(--bg-dark) 70%); }
+    .hero h1 { font-size: 2.6rem; font-weight: 800; margin-bottom: 1rem; line-height: 1.3; }
+    .hero p { font-size: 1.15rem; color: var(--text-muted); max-width: 650px; margin: 0 auto 2rem; }
+
+    .btn { display: inline-block; padding: .8rem 1.8rem; background: var(--accent); color: #000; text-decoration: none; font-weight: 700; border-radius: 8px; transition: background .2s, transform .2s; }
+    .btn:hover { background: var(--accent-hover); transform: translateY(-2px); }
+
+    .section { padding: 4.5rem 8%; }
+    .section-title { text-align: center; margin-bottom: 3rem; }
+    .section-title h2 { font-size: 2rem; margin-bottom: .5rem; }
+    .section-title p { color: var(--text-muted); }
+
+    .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+    .service-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 2rem; transition: border-color .2s, transform .2s; }
+    .service-card:hover { border-color: var(--accent); transform: translateY(-4px); }
+    .service-card h3 { margin-bottom: .8rem; font-size: 1.3rem; color: var(--accent); }
+
+    /* ===== Portfolio: three big slides ===== */
+    .triple { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; max-width: 1500px; margin: 0 auto; }
+    .slide {
+      position: relative; height: clamp(420px, 72vh, 680px); border-radius: 20px; overflow: hidden;
+      background: var(--bg-card); border: 1px solid var(--border-color); cursor: pointer;
+      padding: 0; width: 100%; color: inherit; text-align: start; display: block;
+      transition: border-color .3s, transform .3s, box-shadow .3s;
+    }
+    .slide:hover, .slide:focus-visible { border-color: var(--accent); transform: translateY(-6px); box-shadow: 0 14px 30px rgba(11,159,245,.35); outline: none; }
+    .slide img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .8s ease; }
+    .slide:hover img { transform: scale(1.06); }
+    .slide-info {
+      position: absolute; inset-inline: 0; bottom: 0; padding: 5rem 1.8rem 1.8rem;
+      background: linear-gradient(to top, rgba(15,18,25,.96) 30%, rgba(15,18,25,0));
+    }
+    .slide-info h3 { font-size: clamp(1.3rem, 2vw, 1.9rem); font-weight: 800; margin-bottom: .3rem; }
+    .slide-info p { color: #c5cad3; margin-bottom: 1rem; font-size: .98rem; }
+    .slide-cta { display: inline-block; background: var(--accent); color: #000; font-weight: 700; padding: .5rem 1.2rem; border-radius: 8px; }
+    .slide-count { position: absolute; top: 1rem; inset-inline-start: 1rem; background: rgba(15,18,25,.75); padding: .2rem .8rem; border-radius: 20px; font-size: .85rem; }
+    .arrow {
+      position: absolute; top: 50%; transform: translateY(-50%); z-index: 5;
+      width: 48px; height: 48px; border-radius: 50%; border: 1px solid var(--border-color);
+      background: rgba(15,18,25,.8); color: var(--text-main); font-size: 1.6rem; cursor: pointer; transition: background .2s, color .2s;
+    }
+    .arrow:hover { background: var(--accent); color: #000; }
+    .arrow.prev { right: 14px; }
+    .arrow.next { left: 14px; }
+
+    /* ===== Lightbox / category gallery ===== */
+    .modal { position: fixed; inset: 0; z-index: 200; background: rgba(8,10,14,.96); display: none; flex-direction: column; padding: 1rem 4%; }
+    .modal.open { display: flex; }
+    .modal-top { display: flex; justify-content: space-between; align-items: center; padding: .5rem 0 1rem; }
+    .modal-top h3 { font-size: 1.3rem; }
+    .close-btn { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main); width: 44px; height: 44px; border-radius: 50%; font-size: 1.3rem; cursor: pointer; }
+    .close-btn:hover { background: var(--accent); color: #000; }
+    .viewer { position: relative; flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; }
+    .viewer img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 12px; }
+    .thumbs { display: flex; gap: .6rem; justify-content: center; padding-top: 1rem; overflow-x: auto; }
+    .thumbs img { height: 70px; width: 100px; object-fit: cover; border-radius: 8px; cursor: pointer; opacity: .55; border: 2px solid transparent; transition: opacity .2s, border-color .2s; flex: none; }
+    .thumbs img.active, .thumbs img:hover { opacity: 1; border-color: var(--accent); }
+
+    .cta-box { background: linear-gradient(135deg, #1b202a, #11141a); border: 1px solid var(--border-color); border-radius: 16px; padding: 3rem 2rem; text-align: center; margin: 2rem 8% 5rem; }
+    footer { border-top: 1px solid var(--border-color); text-align: center; padding: 2rem; color: var(--text-muted); font-size: .9rem; }
+
+    @media (max-width: 900px) {
+      .triple { grid-template-columns: 1fr; }
+      .slide { height: 380px; }
+    }
+    @media (max-width: 640px) {
+      .hero h1 { font-size: 1.8rem; }
+      .arrow { width: 40px; height: 40px; }
+      .thumbs img { height: 54px; width: 76px; }
+    }
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo"><img src="2.png" alt="لوغو الشركة"></div>
+    <nav>
+      <a href="#services">خدماتنا</a>
+      <a href="#portfolio">أعمالنا</a>
+      <a href="#contact">تواصل معنا</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h1>تنفيذ احترافي للحلول الإعلانية والشاشات العملاقة</h1>
+    <p>متخصصون في تصنيع الآرمات المضيئة، تجهيز ستاندات المعارض والمجمعات التجارية، وتوريد وبرمجة شاشات العرض الخارجية LED بأعلى معايير الجودة الهندسية.</p>
+    <a href="#contact" class="btn">طلب استشارة أو عرض سعر</a>
+  </section>
+
+  <section class="section" id="services">
+    <div class="section-title">
+      <h2>مجالات الاختصاص</h2>
+      <p>خدمات متكاملة من مرحلة التصميم حتى التركيب والتسليم الميداني</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card">
+        <h3>تصنيع وتركيب الآرمات</h3>
+        <p>آرمات نيون، زنكور، ستانلس ستيل، حروف نافذة 3D مع إضاءة LED داخلية متطورة مقاومة لكافة الظروف الجوية.</p>
+      </div>
+      <div class="service-card">
+        <h3>ستاندات المولات والمعارض</h3>
+        <p>تصميم وتنفيذ منصات العرض الترويجية (Booths &amp; Kiosks) المخصصة للمجمعات التجارية بنماذج معمارية جذابة.</p>
+      </div>
+      <div class="service-card">
+        <h3>شاشات العرض الخارجية (Outdoor LED)</h3>
+        <p>توريد، تركيب، وهيكلة شاشات الإعلانات العملاقة بدقة وضوح فائقة ونظم تحكم وإدارة محتوى عن بُعد.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="portfolio">
+    <div class="section-title">
+      <h2>معرض المشاريع</h2>
+      <p>اضغط على أي مجال لمشاهدة المزيد من أعمالنا المنفذة</p>
+    </div>
+
+    <div class="triple" id="slides"></div>
+  </section>
+
+  <!-- نافذة عرض صور المجال -->
+  <div class="modal" id="modal" role="dialog" aria-modal="true">
+    <div class="modal-top">
+      <h3 id="modalTitle"></h3>
+      <button class="close-btn" id="closeBtn" aria-label="إغلاق">&times;</button>
+    </div>
+    <div class="viewer">
+      <button class="arrow prev" id="mPrev" aria-label="السابق">&rsaquo;</button>
+      <img id="mainImg" src="" alt="">
+      <button class="arrow next" id="mNext" aria-label="التالي">&lsaquo;</button>
+    </div>
+    <div class="thumbs" id="thumbs"></div>
+  </div>
+
+  <section class="cta-box" id="contact">
+    <h2>هل لديك مشروع ترغب في تنفيذه؟</h2>
+    <p style="color: var(--text-muted); margin: 1rem 0 1.8rem;">تواصل مع فريقنا الفني للحصول على معاينة ميدانية ودراسة فنية للمشروع.</p>
+    <a href="https://wa.me/963954357466" target="_blank" class="btn">راسلنا عبر واتساب مباشرة</a>
+  </section>
+
+  <footer>
+    <p>&copy; جميع الحقوق محفوظة لشركة الدعاية والإعلان.</p>
+  </footer>
+
+  <script>
+    /* ====== عدّل هنا فقط ======
+       folders = اسم المجلد (أو أكثر من اسم محتمل)
+       from/to = من أي رقم لأي رقم (الصور الغير موجودة بتنتجاهل تلقائياً)
+       الصفحة بتجرب لحالها أشكال الأسماء: (1).png  أو  (1).png بمسافة قبلها  أو 1.png  أو jpg ...  */
+    const categories = [
+      { title: 'الآرمات واللوحات',         desc: 'تصنيع وتركيب أنظمة ستيل مضيئة وواجهات متاجر.',            folders: ['signboards'],        from: 1, to: 10 },
+      { title: 'ستاندات المولات والمعارض', desc: 'تنفيذ خشب وأكريليك مع إضاءة موجهة للمجمعات التجارية.',   folders: ['stands'],            from: 1, to: 12 },
+      { title: 'الشاشات الخارجية',         desc: 'تركيب هيكل معدني وبرمجة نظام التحكم لشاشات LED.',        folders: ['screen', 'screens'], from: 1, to: 12 }
+    ];
+
+    const $ = id => document.getElementById(id);
+    const src = p => encodeURI(p);
+
+    const nameVariants = n => {
+      const out = [];
+      ['png', 'jpg', 'jpeg', 'webp', 'PNG', 'JPG'].forEach(e => {
+        out.push(`(${n}).${e}`, ` (${n}).${e}`, `(${n}) .${e}`, `${n}.${e}`);
+      });
+      out.push(`(${n}).png.png`);
+      return out;
+    };
+    const canLoad = url => new Promise(res => {
+      const im = new Image();
+      im.onload = () => res(true);
+      im.onerror = () => res(false);
+      im.src = url;
+    });
+    async function findImage(folders, n) {
+      for (const f of folders) {
+        for (const v of nameVariants(n)) {
+          const url = `${f}/${v}`;
+          if (await canLoad(src(url))) return url;
+        }
+      }
+      return null;
+    }
+    async function loadCategory(c) {
+      const nums = Array.from({ length: c.to - c.from + 1 }, (_, i) => c.from + i);
+      const found = await Promise.all(nums.map(n => findImage(c.folders, n)));
+      c.images = found.filter(Boolean);
+      c.cover = c.images[0] || null;
+    }
+
+    /* ---- Three slides ---- */
+    function renderSlides() {
+      $('slides').innerHTML = '';
+      categories.forEach((c, i) => {
+        const s = document.createElement('button');
+        s.className = 'slide';
+        s.innerHTML = (c.cover
+          ? `<img src="${src(c.cover)}" alt="${c.title}">`
+          : `<div style="padding:2rem;color:#9ca3af">لم يتم العثور على صور داخل مجلد «${c.folders[0]}» — تأكد من اسم المجلد وأنه بجانب ملف art.html</div>`) +
+          `<span class="slide-count">${c.images.length} صور</span>
+           <div class="slide-info">
+             <h3>${c.title}</h3>
+             <p>${c.desc}</p>
+             <span class="slide-cta">شاهد الأعمال</span>
+           </div>`;
+        s.onclick = () => c.images.length && openModal(i);
+        $('slides').appendChild(s);
+      });
+    }
+    $('slides').innerHTML = '<p style="color:#9ca3af;text-align:center;grid-column:1/-1">جاري تحميل الصور…</p>';
+    Promise.all(categories.map(loadCategory)).then(renderSlides);
+
+    /* ---- Modal gallery ---- */
+    let cat = 0, idx = 0;
+
+    function openModal(i) {
+      cat = i; idx = 0;
+      const c = categories[i];
+      $('modalTitle').textContent = c.title;
+      $('thumbs').innerHTML = '';
+      c.images.forEach((p, k) => {
+        const t = document.createElement('img');
+        t.src = src(p); t.alt = c.title;
+        t.onclick = () => showImg(k);
+        $('thumbs').appendChild(t);
+      });
+      const multi = c.images.length > 1;
+      $('mPrev').style.display = $('mNext').style.display = multi ? '' : 'none';
+      $('thumbs').style.display = multi ? '' : 'none';
+      showImg(0);
+      $('modal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function showImg(k) {
+      const imgs = categories[cat].images;
+      idx = (k + imgs.length) % imgs.length;
+      $('mainImg').src = src(imgs[idx]);
+      document.querySelectorAll('#thumbs img').forEach((t, n) => t.classList.toggle('active', n === idx));
+    }
+    function closeModal() {
+      $('modal').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    $('closeBtn').onclick = closeModal;
+    $('mNext').onclick = () => showImg(idx + 1);
+    $('mPrev').onclick = () => showImg(idx - 1);
+    $('modal').addEventListener('click', e => { if (e.target === $('modal') || e.target.classList.contains('viewer')) closeModal(); });
+    document.addEventListener('keydown', e => {
+      if (!$('modal').classList.contains('open')) return;
+      if (e.key === 'Escape') closeModal();
+      if (e.key === 'ArrowLeft') showImg(idx + 1);   // الاتجاه RTL
+      if (e.key === 'ArrowRight') showImg(idx - 1);
+    });
+  </script>
+</body>
+</html>
